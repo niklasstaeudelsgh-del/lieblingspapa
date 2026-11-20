@@ -21,7 +21,7 @@ body{background:linear-gradient(#05070f,#141b33 70%,#1f2a4d);min-height:100vh;ov
 #app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);display:flex;flex-direction:column;align-items:center;gap:14px;min-height:100vh}
 h1{font-family:Impact,'Arial Black',sans-serif;font-size:clamp(40px,13vw,64px);margin:18px 0 0;text-align:center;color:#f5c518;text-shadow:0 0 18px #f5c51899,3px 3px 0 #000;letter-spacing:2px;line-height:1}
 .sub{color:#9fb0d8;text-align:center;margin:0}
-.photo{width:100%;max-height:44vh;object-fit:cover;border-radius:14px;border:3px solid #f5c518;box-shadow:0 0 22px #f5c51855}
+.photo{width:100%;max-height:48vh;object-fit:cover;border-radius:14px;border:3px solid #f5c518;box-shadow:0 0 22px #f5c51855}
 .photo.round{width:min(74vw,320px);height:min(74vw,320px);border-radius:50%}
 button{font:inherit;font-weight:800;letter-spacing:1px;background:#f5c518;color:#0a0f1c;border:0;border-radius:30px;padding:14px 28px;font-size:18px;box-shadow:0 0 18px #f5c51877;cursor:pointer}
 button:active{transform:scale(.96)}button:disabled{opacity:.5}
@@ -45,6 +45,7 @@ input:focus{border-color:#f5c518}
 @keyframes fly{to{transform:translateX(130vw) translateY(-30px)}}
 #cv{position:fixed;inset:0;z-index:60;pointer-events:none}
 .chest{width:min(80vw,300px)}.lid{transform-origin:20px 80px;transition:transform .9s}.open .lid{transform:rotate(-65deg)}
+.rise{animation:rise 1.4s ease-out}@keyframes rise{from{transform:translateY(-140px) scale(.1);opacity:0}to{transform:none;opacity:1}}
 .win{font-family:Impact,sans-serif;font-size:34px;color:#f5c518;text-align:center;text-shadow:0 0 16px #f5c518}
 .win2{text-align:center;font-size:18px;line-height:1.4}
 </style>
@@ -59,13 +60,13 @@ input:focus{border-color:#f5c518}
 <script>
 const WORD="BATCAVE";
 const L=[
-{img:"img/q1.jpg",q:"Gotham braucht dich, Thomas! Wo haben wir dieses Foto aufgenommen?",ph:"Ort / Land",a:["a3JldGE=", "Z3JpZWNoZW5sYW5k", "a3JldGFncmllY2hlbmxhbmQ=", "Z3JpZWNoZW5sYW5ka3JldGE="]},
-{img:"img/q2.jpg",q:"Gut gemacht! In welchem Jahr hast du geheiratet?",ph:"Jahr",a:["MjAwMA=="]},
-{img:"img/q3.jpg",q:"Wie viele große Erweiterungen gibt es zu Die Siedler von Catan?",ph:"Zahl",a:["NA==", "dmllcg=="]},
-{img:"img/q4.jpg",q:"Wie viele Batman-Realfilme gibt es von 1966 bis 2022 (ohne Gastauftritte)?",ph:"Zahl",a:["MTI=", "endvZWxm", "OQ==", "bmV1bg=="]},
-{img:"img/q5.jpg",q:"Was ist das Lieblingsessen von Niklas?",ph:"Essen",a:["bnVkZWxu", "cGFzdGE="]},
-{img:"img/q6.jpg",q:"In welchem Musical in Hamburg wart ihr 2024?",ph:"Musical",a:["ZWlzcHJpbnplc3Npbg==", "ZGllZWlzcHJpbnplc3Npbg=="]},
-{img:"img/q7.jpg",q:"Letzte Frage! Was findet Niklas an dir am schönsten, das er von dir mitbekommen hat?",ph:"Antwort",a:["bGFlY2hlbG4=", "bGFjaGVsbg==", "ZGFzbGFlY2hlbG4=", "ZGFzbGFjaGVsbg=="]}];
+{img:"img/q1.jpg",p:"50% 25%",q:"Gotham braucht dich, Thomas! Wo haben wir dieses Foto aufgenommen?",ph:"Ort / Land",a:["a3JldGE=", "Z3JpZWNoZW5sYW5k", "a3JldGFncmllY2hlbmxhbmQ=", "Z3JpZWNoZW5sYW5ka3JldGE="]},
+{img:"img/q2.jpg",p:"50% 38%",q:"Gut gemacht! In welchem Jahr hast du geheiratet?",ph:"Jahr",a:["MjAwMA=="]},
+{img:"img/q3.jpg",p:"50% 22%",q:"Wie viele große Erweiterungen gibt es zu Die Siedler von Catan?",ph:"Zahl",a:["NA==", "dmllcg=="]},
+{img:"img/q4.jpg",p:"50% 36%",q:"Wie viele Batman-Realfilme gibt es von 1966 bis 2022 (ohne Gastauftritte)?",ph:"Zahl",a:["MTI=", "endvZWxm", "OQ==", "bmV1bg=="]},
+{img:"img/q5.jpg",p:"50% 35%",q:"Was ist das Lieblingsessen von Niklas?",ph:"Essen",a:["bnVkZWxu", "cGFzdGE="]},
+{img:"img/q6.jpg",p:"50% 30%",q:"In welchem Musical in Hamburg wart ihr 2024?",ph:"Musical",a:["ZWlza29lbmlnaW4=","ZGllZWlza29lbmlnaW4=","ZWlza29uaWdpbg=="]},
+{img:"img/q7.jpg",p:"50% 12%",q:"Letzte Frage! Was findet Niklas an dir am schönsten, das er von dir mitbekommen hat?",ph:"Antwort",a:["bGFlY2hlbG4=", "bGFjaGVsbg==", "ZGFzbGFlY2hlbG4=", "ZGFzbGFjaGVsbg=="]}];
 const $=s=>document.querySelector(s),app=$("#app");
 const norm=s=>s.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]/g,"");
 const ok=(v,a)=>a.includes(btoa(norm(v)));
@@ -75,14 +76,14 @@ let i=0,got=[];
 (()=>{let s=7,r=()=>(s=(s*9301+49297)%233280)/233280,x=0,h="";while(x<420){const w=18+r()*30,t=50+r()*120;h+=`<rect x="${x}" y="${200-t}" width="${w}" height="${t}" fill="#080c18"/>`;for(let y=200-t+8;y<192;y+=12)for(let k=x+4;k<x+w-6;k+=8)if(r()<.22)h+=`<rect x="${k}" y="${y}" width="3" height="4" fill="#f5c518" opacity=".7"/>`;x+=w+1}$("#sky").innerHTML=h})();
 const slots=()=>`<div class="slots">${[...WORD].map((c,k)=>`<div class="slot ${got[k]?"lit":""}">${got[k]?c:"?"}</div>`).join("")}</div>`;
 function go(fn){const f=$("#fx");f.innerHTML="";for(let k=0;k<16;k++){f.insertAdjacentHTML("beforeend",`<svg style="top:${Math.random()*92}vh;animation-delay:${Math.random()*.4}s;transform:scale(${.6+Math.random()})"><use href="#bat"/></svg>`)}f.classList.add("on");setTimeout(()=>{fn();window.scrollTo(0,0)},400);setTimeout(()=>f.classList.remove("on"),1200)}
-function start(){i=0;got=[];app.innerHTML=`<h1>Thomas<br>wird 60</h1><img class="photo round" src="img/start.jpg" alt=""><p class="sub">Gotham braucht dich heute Nacht…</p><button id="go">Das Spiel beginnt ${"🦇"}</button>`;$("#go").onclick=()=>go(level)}
-function level(){const l=L[i];app.innerHTML=`${slots()}<div class="prog">Level ${i+1} von ${L.length}</div><img class="photo" src="${l.img}" alt=""><div class="hero"><img class="batman" src="img/batman.png" alt=""><div class="bubble">${l.q}</div></div><input id="in" placeholder="${l.ph}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button id="ok">Antworten</button><div class="msg" id="msg"></div>`;
+function start(){i=0;got=[];app.innerHTML=`<h1>Thomas<br>wird 60</h1><img class="photo round" src="img/start.jpg" style="object-position:62% 30%" alt=""><p class="sub">Gotham braucht dich heute Nacht…</p><button id="go">Das Spiel beginnt ${"🦇"}</button>`;$("#go").onclick=()=>go(level)}
+function level(){const l=L[i];app.innerHTML=`${slots()}<div class="prog">Level ${i+1} von ${L.length}</div><img class="photo" src="${l.img}" style="object-position:${l.p}" alt=""><div class="hero"><img class="batman" src="img/batman.png" alt=""><div class="bubble">${l.q}</div></div><input id="in" placeholder="${l.ph}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"><button id="ok">Antworten</button><div class="msg" id="msg"></div>`;
 const inp=$("#in"),m=$("#msg"),b=$("#ok");
-const send=()=>{if(ok(inp.value,l.a)){b.disabled=true;got[i]=1;m.className="msg ok";m.textContent="Richtig! Ein Buchstabe leuchtet auf…";const sl=document.querySelectorAll(".slot")[i];sl.textContent=WORD[i];sl.classList.add("lit");i++;setTimeout(()=>go(i<L.length?level:chest),1300)}else{m.textContent=["Nicht ganz – Batman glaubt an dich!","Falsch! Versuch es nochmal.","Hmm, das war es nicht. Denk nach, Thomas!"][Math.floor(Math.random()*3)];inp.classList.remove("shake");void inp.offsetWidth;inp.classList.add("shake")}};
+const send=()=>{if(ok(inp.value,l.a)){b.disabled=true;got[i]=1;m.className="msg ok";m.textContent="Richtig!";const sl=document.querySelectorAll(".slot")[i];sl.textContent=WORD[i];sl.classList.add("lit");i++;setTimeout(()=>go(i<L.length?level:chest),1300)}else{m.textContent=["Nicht ganz – Batman glaubt an dich!","Falsch! Versuch es nochmal.","Hmm, das war es nicht. Denk nach, Thomas!"][Math.floor(Math.random()*3)];inp.classList.remove("shake");void inp.offsetWidth;inp.classList.add("shake")}};
 b.onclick=send;inp.onkeydown=e=>{if(e.key==="Enter")send()}}
 function chest(){app.innerHTML=`${slots()}<div class="prog">Die letzte Prüfung</div><svg id="ch" class="chest" viewBox="0 0 200 150"><rect x="20" y="70" width="160" height="70" rx="6" fill="#6b3f1d" stroke="#2a1608" stroke-width="3"/><rect x="20" y="95" width="160" height="10" fill="#f5c518"/><g class="lid"><path d="M20 70V45Q20 15 100 15T180 45V70Z" fill="#7d4a22" stroke="#2a1608" stroke-width="3"/><rect x="20" y="52" width="160" height="10" fill="#f5c518"/></g><ellipse cx="100" cy="95" rx="22" ry="14" fill="#f5c518" stroke="#2a1608" stroke-width="2"/><path d="M100 90Q95 86 88 92Q92 91 94 96Q97 93 100 97Q103 93 106 96Q108 91 112 92Q105 86 100 90Z" fill="#0a0f1c"/></svg><p class="sub">Gib das Lösungswort ein, um die Schatztruhe zu öffnen!</p><input id="in" placeholder="Lösungswort" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"><button id="ok">Truhe öffnen</button><div class="msg" id="msg"></div>`;
 const inp=$("#in"),m=$("#msg"),b=$("#ok");
-const send=()=>{if(norm(inp.value)===norm(WORD)){inp.remove();b.remove();m.remove();$("#ch").classList.add("open");confetti();setTimeout(()=>{app.insertAdjacentHTML("beforeend",`<div class="win">DU HAST GEWONNEN!</div><div class="win2">Mission erfüllt, Thomas – Gotham ist gerettet! Dein echtes Geschenk wartet schon auf dich. Komm zu uns und hol es dir ab! 🎁</div><button id="again">Nochmal spielen</button>`);$("#again").onclick=()=>go(start)},900)}else{m.textContent="Das ist nicht das richtige Wort!";inp.classList.remove("shake");void inp.offsetWidth;inp.classList.add("shake")}};
+const send=()=>{if(norm(inp.value)===norm(WORD)){inp.remove();b.remove();m.remove();$("#ch").classList.add("open");confetti();setTimeout(()=>{app.insertAdjacentHTML("beforeend",`<img class="photo rise" src="img/finale.jpg" style="object-position:50% 30%" alt=""><div class="win">DU HAST GEWONNEN!</div><div class="win2">Mission erfüllt, Thomas – Gotham ist gerettet! Dein echtes Geschenk wartet schon auf dich. Komm zu uns und hol es dir ab! 🎁</div><button id="again">Nochmal spielen</button>`);$("#again").onclick=()=>go(start)},900)}else{m.textContent="Das ist nicht das richtige Wort!";inp.classList.remove("shake");void inp.offsetWidth;inp.classList.add("shake")}};
 b.onclick=send;inp.onkeydown=e=>{if(e.key==="Enter")send()}}
 function confetti(){const c=$("#cv"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;const P=Array.from({length:160},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height,v:2+Math.random()*4,r:3+Math.random()*5,c:["#f5c518","#fff","#3b82f6","#ef4444"][Math.floor(Math.random()*4)]}));let t=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=Math.sin(p.y/30);x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*1.6)});if(++t<320)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
 start();
